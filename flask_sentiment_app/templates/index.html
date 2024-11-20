@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Product Sentiment Analysis</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <script>
+            // Show the loading spinner during form submission
+            function showLoading() {
+                document.getElementById("loading").style.display = "block";
+                document.getElementById("results").style.display = "none";
+            }
+        </script>
+        <style>
+            /* Inline styles for loading animation */
+            #loading {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 20px;
+                text-align: center;
+            }
+            #loading img {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Product Sentiment Analysis</h1>
+            <!-- Form to submit the product URL -->
+            <form action="/" method="post" onsubmit="showLoading()">
+                <input
+                    type="text"
+                    name="product_url"
+                    placeholder="Enter Product URL"
+                    required
+                />
+                <button type="submit">Analyze Sentiment</button>
+            </form>
+
+            <!-- Loading animation -->
+            <div id="loading">
+                <img
+                    src="{{ url_for('static', filename='images/spinner.gif') }}"
+                    alt="Loading..."
+                />
+                <p>Fetching reviews and analyzing sentiment... Please wait!</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results">
+                {% if ai_review %}
+                <div class="ai-review">
+                    <h3>My Review:</h3>
+                    <p>{{ ai_review }}</p>
+                </div>
+                {% endif %} {% if sentiment_data %}
+                <div class="results">
+                    <h2>Sentiment Analysis Results</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Review</th>
+                                <th>Sentiment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for review, sentiment in sentiment_data %}
+                            <tr>
+                                <td>{{ review }}</td>
+                                <td>{{ sentiment }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <h3>Overall Product Sentiment: {{ overall_rating }}</h3>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>
